@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 load_dotenv()
 app = Flask('codecool_series')
 
-
 @app.route('/')
 def index():
     shows = queries.get_shows()
@@ -19,8 +18,16 @@ def design():
 
 
 @app.route('/shows/most-rated')
-def show_most_rated():
-    return render_template('shows.html')
+@app.route('/shows/most-rated/<int:page_number>')
+def show_most_rated(page_number=0):
+    shows = queries.get_most_rated_shows()
+    page_count = queries.get_shows_page_count()[0]
+    return render_template('shows.html', shows=shows, page_count=page_count["page_count"], page_number=page_number)
+
+
+@app.route('/show/<int:id>')
+def show(id):
+    return render_template('show.html', id=id)
 
 
 def main():
